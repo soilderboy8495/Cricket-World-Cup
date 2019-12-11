@@ -1,0 +1,121 @@
+---
+title: "ICC Cricket World Cup"
+author: "Udayan Sawant"
+date: "11/25/2019"
+output: html_document
+---
+
+```{r}
+library(readxl)
+batsmen <- read_excel("C:\Users\UDAYAN\Desktop\Yegin Genc\Project\ICC World Cup")
+batsmen
+```
+```{r}
+## Top 10 Batsmen who has most runs in ICC Cricket World Cup
+
+library(ggplot2)
+batsmen %>%
+group_by(Player) %>%
+  summarize(Runs = sum(Runs))%>%
+  top_n(n = 10,wt = Runs)%>%
+  ggplot(aes(x = reorder(Player,Runs),y = Runs,fill = Player))+
+  geom_bar(stat = "identity",show.legend = FALSE)+
+  coord_flip()+
+  labs(x = "Player", y ="Runs", title = "Top 10 batsman with most runs in ICC Cricket World Cup")+
+  geom_text(aes(label = Runs),hjust = 1.25)
+```
+```{r}
+library(readxl)
+bowler <- read_excel("C:\Users\UDAYAN\Desktop\Yegin Genc\Project\ICC World Cup/")
+bowler
+```
+```{r}
+## Top 5 leading wicket takers in ICC Cricket World Cup
+
+bowler %>%
+group_by(Player)%>%
+  summarise(Wickets =  sum(`Five wicket haul`%in% Wickets))%>%
+  arrange(desc(Wickets))%>%
+  top_n(5)%>%
+  ggplot(aes(x= reorder(Player, -Wickets), y = Wickets, fill = Player))+
+  geom_bar(stat = "identity",show.legend =  FALSE)+
+  labs(x = "Player" , y = "Wickets", title = "Top five leading wicket takers in ICC Cricket World Cup")+
+  theme(axis.text.x = element_text(angle = 100, hjust = 1.25))+
+  geom_text(aes(label = Wickets, vjust =1.25))
+```
+```
+```{r}
+library(readxl)
+matches <- read_excel("C:\Users\UDAYAN\Desktop\Yegin Genc\Project\ICC World Cup")
+matches
+```
+```{r}
+## Matches won by each team
+matches%>%
+  group_by(winner)%>%
+  summarize(most_win = n())%>%
+ggplot(aes(x = winner,y = most_win,fill = winner))+
+  geom_bar(stat = "identity")+
+  coord_flip()+
+  scale_y_continuous("Matches won")
+```
+
+#% MOST VICTORIES BY RUNS
+```{r}
+require(tidyverse)
+require(tidyr)
+  matches %>% filter(win_by_runs == max(win_by_runs))%>%
+  select(winner,win_by_runs)
+```
+
+```{r}
+## MOST VICTORIES BY WICKETS
+matches%>% 
+  filter(win_by_wickets == max(win_by_wickets))%>%
+  select(winner,win_by_wickets)
+```
+```{r}
+#CLOSEST MARGIN VICTORY (minimum runs)
+matches%>%
+  filter(win_by_runs != 1)%>%
+  filter(win_by_runs == min(win_by_runs)) %>%
+  select(winner, win_by_runs,edition)%>%
+  ggplot(aes(winner,fill = edition))+
+  geom_bar()+
+  coord_flip()+
+  scale_y_continuous("count of win")
+```
+```{r}
+## CLOSEST MARGIN VICTORY by Wickets
+matches%>%
+  filter(win_by_wickets >= 6)%>%
+  filter(win_by_wickets == min(win_by_wickets))%>%
+  select(winner,win_by_runs,edition)%>%
+  ggplot(aes(winner, fill = edition))+
+  geom_bar()+
+  coord_flip()+
+  scale_y_continuous("Wickets")
+```
+```{r}
+#MOST SUCCESSFUL TEAMS
+matches %>% 
+  group_by(winner, edition)%>%
+  summarize(most_win = n())%>%
+  filter(most_win == max(most_win)) %>% arrange(desc(edition,most_win))
+```
+
+```{r}
+matches
+mean(matches$win_by_runs, na.rm = T)
+mean(matches$win_by_wickets, na.rm = T)
+median(matches$win_by_wickets, na.rm = T)
+hist(matches$win_by_wickets)
+
+## Histogram win by wickets and win by runs is rightly skewed and is positively skewed.
+```
+
+
+
+
+
+
