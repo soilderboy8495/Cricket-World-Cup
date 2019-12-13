@@ -1,0 +1,151 @@
+---
+title: "ICC"
+author: "Udayan Sawant"
+date: "11/25/2019"
+output: html_document
+---
+
+```{r}
+library(readxl)
+batsmen = read_excel("C:/Users/UDAYAN/Desktop/Yegin Genc/Project/ICC World Cup/batsmen.xlsx")
+batsmen
+```
+```{r}
+bowler = read_excel("C:/Users/UDAYAN/Desktop/Yegin Genc/Project/ICC World Cup/bowler.xlsx")
+bowler
+```
+```{r}
+matches = read_excel("C:/Users/UDAYAN/Desktop/Yegin Genc/Project/ICC World Cup/Matches Dataset.xlsx")
+matches
+```
+```{r}
+require(tidyverse)
+require(tidyr)
+require(tidyselect)
+require(ggplot2)
+```
+
+```{r}
+matches1 = select(matches, c('match_id', 'edition', 'winner', 'result'))
+matches1
+```
+```{r}
+matches2 = rbind(matches1, c('#198', 2019, 'India', 'normal'))
+matches2
+```
+
+```{r}
+wins = read_excel("C:/Users/UDAYAN/Desktop/Yegin Genc/Project/ICC World Cup/wins.xlsx")
+wins
+```
+```{r}
+require(lattice)
+batsmen
+
+```
+
+
+```{r}
+xyplot(Runs~ Mat, data = batsmen)
+```
+
+```{r}
+summary(lm(Runs~Mat , data = batsmen))
+ggplot(data = batsmen, aes(x = Runs, y = Mat)) +
+  geom_point() + 
+  geom_smooth(method = "lm", se = FALSE)
+```
+```{r}
+bowler
+```
+
+```{r}
+#Economical Bowler in World Cup
+xyplot(Overs ~ Runs, data = bowler)
+```
+```{r}
+summary(lm(Overs ~ Runs, data = bowler))
+```
+```{r}
+ggplot(data = bowler, aes(x = Overs, y = Runs)) +
+  geom_point() + 
+  geom_smooth(method = "lm", se = FALSE)
+```
+```{r}
+#Consistent Batsmen
+xyplot(Inns ~ Runs, data = batsmen)
+```
+```{r}
+batsmen
+```
+
+```{r}
+#Consistent Batsmen in World Cups
+xyplot(Inns ~ Ave, data = batsmen)
+```
+
+
+
+
+
+```{r}
+summary(lm(Inns ~ Runs , data = batsmen))
+```
+```{r}
+ggplot(data = batsmen, aes(x = Inns, y = Runs)) +
+  geom_point() + 
+  geom_smooth(method = "lm", se = FALSE)
+```
+```{r}
+#Consistent bowler in World Cups
+xyplot(Runs ~ Wickets, data = bowler)
+```
+
+```{r}
+summary(lm(Runs ~ Wickets, data = bowler))
+```
+```{r}
+ggplot(data = bowler, aes(x = Runs, y = Wickets)) +
+  geom_point() + 
+  geom_smooth(method = "lm", se = FALSE)
+```
+
+
+```{r}
+#Batsmen Form
+batsmen = batsmen %>% mutate(batsmen_form = 0.4262*Ave + 0.2566*Inns + 0.1510*SR + 0.0787*Tons + 0.0556*Fifties - 0.0328*zeros) %>% arrange(desc(batsmen_form))
+batsmen1 = batsmen %>% select(-Age, -Mat, -Inns, -NO, -Runs, -HS, -Ave, -BF, -SR, -Tons, -Fifties, -zeros, -fours, -sixes)
+batsmen1
+```
+
+
+
+
+```{r}
+#Bowler Form
+require(tidyverse)
+bowler = bowler %>% mutate( Average = as.numeric(Ave), SR = Overs/Wickets)
+bowler
+bowler %>% mutate(bowling_form = 0.3269*Overs + 0.2846*Inns + 0.1210*Average +0.1877*SR + 0.0798*`Five wicket haul`) %>% arrange(bowling_form)
+```
+
+
+
+```{r}
+require(tidyverse)
+bowler = bowler %>% mutate( Average = as.numeric(Ave), SR = Overs/Wickets)
+bowler
+bowler %>% mutate(bowling_form = 0.3269*Overs + 0.2846*Inns + 0.1210*Average +0.1877*SR + 0.0798*`Five wicket haul`) %>% arrange(desc(bowling_form))
+bowler1 =  bowler %>% select(-Age, -Mat, -Inns, -Overs, -Mdns, -Runs, -Wickets, -Ave, -Average, -`Four wicket haul`, -`Five wicket haul`, -Average, -SR)
+bowler1
+```
+```{r}
+require(tidyverse)
+bowler
+bowler = bowler %>% mutate(bowling_cons = 0.4174*Overs + 0.2634*Inns + 0.0975*Average +0.1602*SR + 0.0615*`Five wicket haul`) %>% arrange(desc(bowling_cons))
+bowler2 = bowler %>% select(-Age, -Mat, -Inns, -Overs, -Mdns, -Runs, -Wickets, -Ave, -Average, -`Four wicket haul`, -`Five wicket haul`, -Average, -SR)
+bowler2
+```
+
+
+
